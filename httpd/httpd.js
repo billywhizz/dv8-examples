@@ -1,13 +1,22 @@
 function threadMain () {
+  const { OS } = module('os', {})
   const { Socket, TCP } = module('socket', {})
   const { HTTPParser, REQUEST } = module('httpParser', {})
+  const { UV_TTY_MODE_NORMAL, TTY } = module('tty', {})
+  const { start, stop } = require('../common/meter.js')
+
+  const stdin = new TTY(0)
+  stdin.setup(Buffer.alloc(1024), UV_TTY_MODE_NORMAL)
+  stdin.resume()
 
   const parsers = []
 
+  const SIGTERM = 15
   const read = Buffer.alloc(64 * 1024)
   const write = Buffer.alloc(64 * 1024)
   const server = new Socket(TCP)
   const methods = { 0: 'DELETE', 1: 'GET', 2: 'HEAD', 3: 'POST', 4: 'PUT', 6: 'OPTIONS', 28: 'PATCH' }
+  const os = new OS()
 
   let resLength = write.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nServer: dv8\r\nDate: ${(new Date()).toUTCString()}\r\nContent-Length: 13\r\n\r\nHello, World!`, 0)
 
@@ -47,6 +56,8 @@ function threadMain () {
     return parser
   }
 
+  let conn = 0
+
   function onConnect () {
     const client = new Socket(TCP)
     const parser = createParser()
@@ -58,10 +69,15 @@ function threadMain () {
       if (r < resLength) return client.pause()
     })
     client.setup(read, write)
-    client.onClose(() => parsers.push(parser))
+    client.onClose(() => {
+      stop(client)
+      parsers.push(parser)
+    })
     client.onDrain(() => client.resume())
     client.onEnd(() => client.close())
     parser.reset(REQUEST, client)
+    client.name = `socket.${conn++}`
+    start(client, true)
     return client
   }
 
@@ -71,6 +87,11 @@ function threadMain () {
   server.timer = setInterval(() => {
     resLength = write.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nServer: dv8\r\nDate: ${(new Date()).toUTCString()}\r\nContent-Length: 13\r\n\r\nHello, World!`, 0)
   }, 500)
+
+  os.onSignal(signum => {
+    print(`thread(${process.TID}).SIGNAL: ${signum}`)
+    return 1 // 1 to exit
+  }, SIGTERM)
 }
 
 let workers = parseInt(process.args[2] || '1')
