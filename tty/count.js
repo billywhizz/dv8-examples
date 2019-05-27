@@ -1,5 +1,6 @@
-const { UV_TTY_MODE_NORMAL, TTY } = module('tty', {})
-const { start, stop } = require('../common/meter.js')
+const { UV_TTY_MODE_NORMAL, TTY } = library('tty', {})
+const meter = require('../common/meter.js')
+const { start, stop } = meter
 const stdin = new TTY(0)
 const BUFFER_SIZE = 256 * 1024
 const buf = Buffer.alloc(BUFFER_SIZE)

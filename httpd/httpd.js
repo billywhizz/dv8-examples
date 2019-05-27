@@ -1,9 +1,8 @@
 function threadMain () {
-  const { OS } = module('os', {})
-  const { Socket, TCP } = module('socket', {})
-  const { HTTPParser, REQUEST } = module('httpParser', {})
-  const { UV_TTY_MODE_NORMAL, TTY } = module('tty', {})
-  const { start, stop } = require('../common/meter.js')
+  const { OS } = library('os', {})
+  const { Socket, TCP } = library('socket', {})
+  const { HTTPParser, REQUEST } = library('httpParser', {})
+  const { UV_TTY_MODE_NORMAL, TTY } = library('tty', {})
 
   const stdin = new TTY(0)
   stdin.setup(Buffer.alloc(1024), UV_TTY_MODE_NORMAL)
@@ -70,14 +69,12 @@ function threadMain () {
     })
     client.setup(read, write)
     client.onClose(() => {
-      stop(client)
       parsers.push(parser)
     })
     client.onDrain(() => client.resume())
     client.onEnd(() => client.close())
     parser.reset(REQUEST, client)
     client.name = `socket.${conn++}`
-    start(client, true)
     return client
   }
 

@@ -1,4 +1,4 @@
-const { UV_TTY_MODE_RAW, TTY } = module('tty', {})
+const { UV_TTY_MODE_RAW, TTY } = library('tty', {})
 const { start, stop } = require('../common/meter.js')
 const BUFFER_SIZE = 256 * 1024
 const MAX_BUFFER = 4 * BUFFER_SIZE
