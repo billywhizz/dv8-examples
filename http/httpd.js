@@ -86,12 +86,23 @@ function threadMain () {
   }, 500)
 
   os.onSignal(signum => {
-    print(`thread(${process.TID}).SIGNAL: ${signum}`)
+    //print(`thread(${process.TID}).SIGNAL: ${signum}`)
     return 1 // 1 to exit
   }, SIGTERM)
 }
 
 let workers = parseInt(process.args[2] || '1')
-while (workers--) {
-  process.spawn(threadMain, result => print(`thread ${result.thread.id} done`))
+
+while(workers--) {
+  process.spawn(threadMain, result => {
+    const { err, thread, status } = result
+    if (err) {
+      print(err.message)
+    }
+    print(`thread ${thread.id} done`)
+  })
 }
+
+setInterval(() => {
+  print(process.memoryUsage().rss)
+}, 1000)

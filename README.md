@@ -4,93 +4,71 @@ Examples for the dv8 runtime (github/billywhizz/dv8)
 
 ## Install Binary (should work on x86_64 with modern kernel)
 ```
-curl -s https://raw.githubusercontent.com/billywhizz/dv8-releases/v0.0.7/linux-x86_64/install.sh | sh
+curl -s https://raw.githubusercontent.com/billywhizz/dv8-releases/v0.0.8/linux-x86_64/install.sh | sh
+sudo cp dv8 /usr/local/bin/
 ```
 or
 ```
-wget https://github.com/billywhizz/dv8-releases/archive/v0.0.7.tar.gz
-tar -zxvf v0.0.7.tar.gz
-sudo cp dv8-releases-0.0.7/linux-x86_64/dv8 /usr/local/bin
-rm -fr dv8-releases-0.0.7
+wget https://github.com/billywhizz/dv8-releases/archive/v0.0.8.tar.gz
+tar -zxvf v0.0.8.tar.gz
+sudo cp dv8-releases-0.0.8/linux-x86_64/dv8 /usr/local/bin
+rm -fr dv8-releases-0.0.8
 ```
+
+## If you dont run linux, run inside a docker container
+```
+docker run -it --rm --name dv8 -v $(pwd)/dv8:/usr/local/bin/dv8 -v $(pwd):/source --workdir /source alpine:3.9 /bin/sh
+```
+
+## Start with a repl so you can inspect the runtime and run commands
+```
+dv8
+```
+
+## Evaluate some javascript from command line
+```
+dv8 -e 'const mem = new Float64Array(16);memoryUsage(mem);print(mem[0])'
+```
+
+## Evaluate with v8 command line switches
+```
+dv8 --write-protect-code-memory --optimize-for-size --jitless --no-expose-wasm -e 'const mem = new Float64Array(16);memoryUsage(mem);print(mem[0])'
+```
+
 # Examples
 
-## HTTP Server (Single Thread)
+## bench
 
-```
-cd httpd
-dv8 httpd.js
-```
+Various Benchmarks and Reports
 
-## HTTP Server (Two THreads)
+## common
 
-```
-cd httpd
-dv8 httpd.js 2
-```
+Common libraries used by all programs
 
-## Test HTTP Server
-```
-curl -vvv http://127.0.0.1:3000
-```
+## crypto
 
-## Benchmark HTTP Server (Non Pipelined)
-```
-wrk -c 64 -t 2 -d 20 http://127.0.0.1:3000/
-```
+Crypto/TLS examples
 
-## Benchmark HTTP Server (Pipelined)
-```
-wrk -c 256 -t 2 -d 20 -s pipeline.lua http://127.0.0.1:3000/ -- 1024
-```
+## debugger
 
-## TTY
+Kinda working PoC of debugging with v8 inspector protocol
 
-### Count Stdin Bytes (inside shell)
-```
-cd tty
-dd if=/dev/zero bs=65536 count=1000000 | dv8 count.js
-```
+## fs
 
-### Pipe/Cat (inside shell)
-```
-cd tty
-dd if=/dev/zero bs=65536 count=1000000 | dv8 pipe.js | dv8 count.js
-```
+File System examples
 
-## FS
+## http
 
-### Write to a file
-```
-cd fs
-dv8 writeFile.js
-```
+HTTP client and server examples
 
-## UDP
+## thread
 
-### DNS Query
-```
-cd udp
-dv8 dns.js
-```
+Threading examples
 
-## Thread
+## tty
 
-### Timing Thread Spawn with IPC
-```
-cd thread
-dv8 spawn.js
-```
+TTY examples
 
-### Street Test Threading
-```
-cd thread
-dv8 bench.js
-```
+## udp
 
-## Process
-
-### Private Memory Usage
-```
-dv8 rss.js
-```
+UDP examples

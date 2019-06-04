@@ -1,1 +1,0 @@
-print(process.memoryUsage().rss)
