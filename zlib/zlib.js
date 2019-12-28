@@ -1,0 +1,47 @@
+const { File, O_RDWR, O_CREAT } = library('fs', {})
+const { ZLib, ZLIB_MODE_GZIP, ZLIB_MODE_GUNZIP, Z_FINISH, Z_NO_FLUSH, Z_FULL_FLUSH } = library('libz', {})
+const { buf2hex } = require('../common/buffers.js')
+const BUFSIZE = 1024
+const [ rb, wb ] = [ Buffer.alloc(BUFSIZE), Buffer.alloc(BUFSIZE) ]
+
+const zlib = new ZLib(ZLIB_MODE_GZIP)
+print(`setup: ${zlib.setup(wb, rb)}`)
+print(`write: ${zlib.write(wb.write('hello'), Z_NO_FLUSH)}`)
+print(`write: ${zlib.write(wb.write('hello'), Z_NO_FLUSH)}`)
+print(`write: ${zlib.write(wb.write('hello'), Z_FULL_FLUSH)}`)
+print(`write: ${zlib.write(wb.write('hello'), Z_FINISH)}`)
+print(`end: ${zlib.end()}`)
+print(buf2hex(rb, BUFSIZE))
+
+print(`setup: ${zlib.setup(wb, rb)}`)
+print(`write: ${zlib.write(wb.write('hello'), Z_NO_FLUSH)}`)
+print(`write: ${zlib.write(wb.write('hello'), Z_NO_FLUSH)}`)
+print(`write: ${zlib.write(wb.write('hello'), Z_FULL_FLUSH)}`)
+print(`write: ${zlib.write(wb.write('hello'), Z_FINISH)}`)
+print(`end: ${zlib.end()}`)
+print(buf2hex(rb, BUFSIZE))
+
+let r = zlib.setup(wb, rb)
+r = zlib.write(wb.write('hello'), Z_FINISH)
+if (r < 0) throw new Error('Bad Write')
+print(`done: ${BUFSIZE - r}`)
+let size = BUFSIZE - r
+if (zlib.end() !== 0) throw new Error('Error Finalizing')
+print(buf2hex(rb, BUFSIZE - r))
+
+const fs = new File()
+r = fs.setup(rb, rb)
+print(`setup: ${r}`)
+const fd = fs.open('./hello.gz', O_RDWR | O_CREAT)
+print(`open: ${fd}`)
+r = fs.write(size, 0)
+print(`write: ${r}`)
+r = fs.close()
+print(`close: ${r}`)
+
+const inflate = new ZLib(ZLIB_MODE_GUNZIP)
+inflate.setup(rb, wb, 9)
+size = BUFSIZE - inflate.write(size, Z_FINISH)
+inflate.end()
+print(buf2hex(wb, size))
+print(wb.read(0, size))

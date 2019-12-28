@@ -4,15 +4,15 @@ Examples for the dv8 runtime (github/billywhizz/dv8)
 
 ## Install Binary (should work on x86_64 with modern kernel)
 ```
-curl -s https://raw.githubusercontent.com/billywhizz/dv8-releases/v0.0.8/linux-x86_64/install.sh | sh
+curl -s https://raw.githubusercontent.com/billywhizz/dv8-releases/v0.0.9/linux-x86_64/install.sh | sh
 sudo cp dv8 /usr/local/bin/
 ```
 or
 ```
-wget https://github.com/billywhizz/dv8-releases/archive/v0.0.8.tar.gz
-tar -zxvf v0.0.8.tar.gz
-sudo cp dv8-releases-0.0.8/linux-x86_64/dv8 /usr/local/bin
-rm -fr dv8-releases-0.0.8
+wget https://github.com/billywhizz/dv8-releases/archive/v0.0.9.tar.gz
+tar -zxvf v0.0.9.tar.gz
+sudo cp dv8-releases-0.0.9/linux-x86_64/dv8 /usr/local/bin
+rm -fr dv8-releases-0.0.9
 ```
 
 ## If you dont run linux, run inside a docker container
@@ -43,7 +43,7 @@ Various Benchmarks and Reports
 
 ## common
 
-Common libraries used by all programs
+Common functions used across examples
 
 ## crypto
 
@@ -61,6 +61,10 @@ File System examples
 
 HTTP client and server examples
 
+## sockets
+
+Unix domain socket and TCP examples
+
 ## thread
 
 Threading examples
@@ -72,3 +76,7 @@ TTY examples
 ## udp
 
 UDP examples
+
+## zlib
+
+ZLib examples

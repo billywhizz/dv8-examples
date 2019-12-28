@@ -2,16 +2,14 @@
 
 ### Street Test Threading
 ```
-cd thread
 dv8 bench.js
 ```
 
 ## inner.js
 
-Spawning a thread from another (Hint: it doesn't work)
+Spawning a thread from another
 
 ```
-cd thread
 dv8 inner.js
 ```
 

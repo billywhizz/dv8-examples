@@ -23,7 +23,6 @@ const qtype = {
   MINFO: 14,
   MX: 15,
   TXT: 16,
-
   // Additional
   AXFR: 252,
   MAILB: 253,
@@ -176,7 +175,8 @@ sock.onMessage((len, address, port) => {
   print(JSON.stringify(message, null, '  '))
   sock.stop()
 })
-sock.bind('0.0.0.0', 0)
+const r = sock.bind('0.0.0.0', 0)
+print(`bind: ${r}`)
 sock.start()
 const len = createMessage(process.args[2] || 'example.com', wb)
 const message = parseMessage(wb, len)

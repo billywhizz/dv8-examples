@@ -138,9 +138,9 @@ const createServer = (callback, opts) => {
       client.close()
     })
     client.onError((code, message) => {
-      //print('client.onError')
-      //print(code)
-      //print(message)
+      print('client.onError')
+      print(code)
+      print(message)
     })
     client.setup(context.in, context.out)
     if (_onConnect) {
@@ -156,9 +156,7 @@ const createServer = (callback, opts) => {
     }
   })
   const { address, port } = opts
-  return { now, contexts, sock: server, defaults, opts, listen: () => {
-    server.listen(address, port)
-  }, onClose: fn => (_onClose = fn), onConnect: fn => (_onConnect = fn), onDisconnect: fn => (_onDisconnect = fn) }
+  return { now, contexts, sock: server, defaults, opts, listen: () => server.listen(address, port), onClose: fn => (_onClose = fn), onConnect: fn => (_onConnect = fn), onDisconnect: fn => (_onDisconnect = fn) }
 }
 
 module.exports = { TCP, UNIX, createServer }

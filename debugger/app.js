@@ -4,6 +4,7 @@ process.version = 'v10.16.0'
 process.arch = 'x64'
 dbg.start()
 let counter = 0
-const timer = setTimeout(() => {
+process.timer = setInterval(() => {
   counter++
-}, 10000)
+  print(counter)
+}, 1000)

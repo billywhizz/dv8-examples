@@ -1,9 +1,8 @@
 ## dns.js
 
-example dns query using udp
+example dns query using udp, using google's 8.8.8.8 service
 
 ### DNS Query
 ```
-cd udp
 dv8 dns.js
 ```

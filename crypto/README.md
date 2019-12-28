@@ -10,10 +10,6 @@ various example of using the Hmac class to do hmacs supported by openssl
 
 stress tests for hash and hmac classes
 
-## tls.js
-
-module for setting up TLS/SSL on a socket
-
 ## tlsServer.js
 
 tls server socket example

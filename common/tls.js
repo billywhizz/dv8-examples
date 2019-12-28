@@ -9,8 +9,6 @@ const setSecure = (sock, onSecure, currentContext = defaultContext) => {
     if (!hostname) return false
     const context = contexts[hostname]
     if (!context) return false
-    print(context.hostname)
-    print(currentContext.hostname)
     if (context.hostname === currentContext.hostname) return context
     return context
   })
@@ -24,10 +22,11 @@ const setSecure = (sock, onSecure, currentContext = defaultContext) => {
   if (onSecure) secureClient.onSecure(onSecure)
 }
 
-const addContext = (hostname, { isServer = true, certStore = './certs' }) => {
+const addContext = (hostname, opts = { isServer: true, certStore: './certs' }) => {
+  const { isServer, certStore } = opts
   const secureContext = new SecureContext()
   if (isServer) {
-    secureContext.setup(0, `${certStore}/${hostname}.cert.pem`, `${certStore}/${hostname}.key.pem`)
+    secureContext.setup(0, `${certStore}/${hostname}/cert.pem`, `${certStore}/${hostname}/privkey.pem`, `${certStore}/${hostname}/fullchain.pem`)
   } else {
     secureContext.setup(1)
   }

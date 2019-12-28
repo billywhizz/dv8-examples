@@ -1,4 +1,4 @@
-const { setSecure, addContext } = require('./tls.js')
+const { setSecure, addContext } = require('../common/tls.js')
 const { Socket, TCP } = library('socket', {})
 
 const buf = Buffer.alloc(16384)
@@ -25,6 +25,6 @@ sock.onConnect(() => {
 const timer = setInterval(() => {
   print(JSON.stringify(process.memoryUsage().rss))
 }, 1000)
-addContext('dv8.billywhizz.io', {})
+addContext('dv8.billywhizz.io')
 
 sock.listen('0.0.0.0', 3000)

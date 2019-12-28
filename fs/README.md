@@ -7,6 +7,5 @@ lots of work to be done here...
 ### Write to a file
 
 ```
-cd fs
 dv8 writeFile.js
 ```
