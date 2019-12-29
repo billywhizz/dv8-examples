@@ -1,0 +1,46 @@
+const { Socket, TCP } = library('socket', {})
+const server = new Socket(TCP)
+const read = Buffer.alloc(64 * 1024)
+const write = Buffer.alloc(64 * 1024)
+const bytes = new Uint8Array(read.bytes)
+let off = 0, records = 0, resLength = 0
+const response = `HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nServer: dv8\r\nDate: ${(new Date()).toUTCString()}\r\nContent-Length: 13\r\n\r\nHello, World!`
+while (1) {
+  resLength = write.write(response, off)
+  off += resLength
+  records++
+  if (off + resLength > write.size) break
+}
+global.t1 = setInterval(() => print(`mem: ${process.memoryUsage().rss}`), 1000)
+server.onConnect(() => {
+  const client = new Socket(TCP)
+  let lastByte = 0, lineLength = 0
+  client.setup(read, write)
+  client.onClose(() => {})
+  client.onRead(len => {
+    let off = 0, byte = 0, requests = 0
+    while (len--) {
+      byte = bytes[off++]
+      lineLength++
+      if (byte === 10 && lastByte === 13) {
+        if (lineLength === 2) {
+          requests++
+          if (requests === records) {
+            client.write(requests * resLength)
+            requests = 0
+          }
+        }
+        lineLength = 0
+      }
+      lastByte = byte
+    }
+    if (requests > 0) {
+      client.write(requests * resLength)
+      requests = 0
+    }
+  })
+  client.onDrain(() => client.resume())
+  client.onEnd(() => client.close())
+  return client
+})
+server.listen('0.0.0.0', 3001)
