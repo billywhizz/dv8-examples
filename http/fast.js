@@ -11,7 +11,11 @@ while (1) {
   records++
   if (off + resLength > write.size) break
 }
-global.t1 = setInterval(() => print(`mem: ${process.memoryUsage().rss}`), 1000)
+let rps = 0
+global.t1 = setInterval(() => {
+  print(`mem: ${process.memoryUsage().rss}, rps: ${rps}`)
+  rps = 0
+}, 1000)
 server.onConnect(() => {
   const client = new Socket(TCP)
   let lastByte = 0, lineLength = 0
@@ -26,6 +30,7 @@ server.onConnect(() => {
         if (lineLength === 2) {
           requests++
           if (requests === records) {
+            rps += requests
             client.write(requests * resLength)
             requests = 0
           }
@@ -35,6 +40,7 @@ server.onConnect(() => {
       lastByte = byte
     }
     if (requests > 0) {
+      rps += requests
       client.write(requests * resLength)
       requests = 0
     }
@@ -43,4 +49,4 @@ server.onConnect(() => {
   client.onEnd(() => client.close())
   return client
 })
-server.listen('0.0.0.0', 3001)
+server.listen('0.0.0.0', 3000)
