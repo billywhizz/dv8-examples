@@ -3,14 +3,12 @@ const BUFFER_SIZE = 64 * 1024
 const MAX_BUFFER = 4 * BUFFER_SIZE
 const stdin = new TTY(0)
 const buf = Buffer.alloc(BUFFER_SIZE)
-function parse(obj) {
-  return Function('"use strict";return (' + obj + ')')();
-}
 stdin.setup(buf, UV_TTY_MODE_NORMAL)
 stdin.onRead(len => {
   const source = buf.read(0, len)
   try {
-    const result = parse(source)
+    // ideally we could pass in an object and have the code run in a separate context
+    const result = global.evalScript(source)
     let payload = `${JSON.stringify(result, null, 2)}\n`
     if (!result) payload = '(null)\n'
     if (!payload) payload = '(null)\n'

@@ -1,3 +1,5 @@
+const debug = require('./debug.js')
+
 const { Socket, TCP } = library('socket', {})
 const server = new Socket(TCP)
 const read = Buffer.alloc(64 * 1024)
@@ -55,3 +57,5 @@ server.onConnect(() => {
   return client
 })
 server.listen('0.0.0.0', 3000)
+
+debug.start()

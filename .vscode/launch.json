@@ -17,12 +17,17 @@
             "cwd": "${workspaceFolder}/debugger",
             "console": "integratedTerminal",
             "protocol": "inspector",
+            "remoteRoot": "${workspaceFolder}/debugger",
+            "localRoot": "${workspaceFolder}/debugger",
+            "showAsyncStacks": true,
             "env": {
-                "THREAD_BUFFER_SIZE": "67108864"
+                "THREAD_BUFFER_SIZE": "67108864",
+                "DV8_MODULES": "/home/andrew/Documents/source/cpp/dv8/out/lib/"
             },
-            "port": "9222",
-            "runtimeExecutable": "/usr/local/bin/dv8",
-            "program": "${workspaceFolder}/debugger/app.js"
+            "args": ["--inspect-brk", "www.amazon.co.uk"],
+            "port": 9222,
+            "runtimeExecutable": "/home/andrew/Documents/source/cpp/dv8/out/bin/dv8-dynamic",
+            "program": "${workspaceFolder}/debugger/lookup.js"
         }
     ]
 }

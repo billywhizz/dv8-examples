@@ -2,12 +2,12 @@ function threadFunc () {
   const { createServer } = require('./http.js')
   const { WSParser, createMessage } = require('./websocket.js')
   const { Hash } = library('openssl', {})
-  const { buf2b64 } = require('./util.js')
+  const { buf2b64 } = require('../common/buffers.js')
 
   process.pid = process.PID
   process.version = 'v10.16.0'
   process.arch = 'x64'
-print('hello')
+
   const [wb, rb] = [Buffer.alloc(64 * 1024 * 1024), Buffer.alloc(64 * 1024 * 1024)]
   const hash = new Hash()
   hash.setup('sha1', wb, rb)
@@ -26,7 +26,7 @@ print('hello')
         const websocket = new WSParser()
         process.onMessage(message => {
           const len = createMessage(context.out, message.payload)
-          const r = client.write(len)
+          client.write(len)
         })
         websocket.onHeader = header => (chunks.length = 0)
         websocket.onChunk = (off, len, header) => {
@@ -103,7 +103,7 @@ print('hello')
       }
     })
   }
-  const result = createServer(middleware, { address: '0.0.0.0', port: 9222 }).listen()
+  createServer(middleware, { address: '0.0.0.0', port: 9222 }).listen()
 }
 
 const UV_RUN_ONCE = 1
@@ -116,6 +116,7 @@ module.exports = {
     thread.onMessage(message => global.send(message.payload))
     global.receive = message => thread.sendString(message)
     global.onRunMessageLoop = () => {
+      process.loop.stop()
       if (looping) return
       looping = true
       process.loop.run(UV_RUN_ONCE)
@@ -124,7 +125,9 @@ module.exports = {
         process.loop.run(UV_RUN_ONCE) // run the loop once
       }
     }
-    global.onQuitMessageLoop = () => (looping = false)
+    global.onQuitMessageLoop = () => {
+      looping = false
+    }
   },
   stop: () => {
 

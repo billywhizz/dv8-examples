@@ -80,3 +80,6 @@ UDP examples
 ## zlib
 
 ZLib examples
+
+
+alias dv8="DV8_MODULES=/home/andrew/Documents/source/cpp/dv8/out/lib/ /home/andrew/Documents/source/cpp/dv8/out/bin/dv8-dynamic"

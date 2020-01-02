@@ -58,6 +58,29 @@ const buf2binary = (bytes, len) => {
   return results.map(v => v.join(' ')).join('\n')
 }
 
+function pprint (bytes, width = 16, pos = 0) {
+  const result = []
+  const len = bytes.length
+  for (let i = 0; i < len; i++) {
+    if (i % width === 0) {
+      if (i === 0) {
+        result.push('')
+      } else {
+        result.push('\n')
+      }
+    }
+    if (i % 8 === 0) {
+      result.push(`${i.toString().padStart(3, ' ')}:`)
+    }
+    if (bytes[i] >= 32 && bytes[i] <= 126) {
+      result.push(`|${bytes[i].toString().padStart(3, ' ')} ${String.fromCharCode(bytes[i])}`)
+    } else {
+      result.push(`|${bytes[i].toString().padStart(3, ' ')}  `)
+    }
+  }
+  print(result.join(' '))
+}
+
 module.exports = {
-  buf2b64, buf2hex, hex2buf, b642buf, buf2binary
+  buf2b64, buf2hex, hex2buf, b642buf, buf2binary, pprint
 }

@@ -6,7 +6,7 @@ const read = Buffer.alloc(64 * 1024)
 const write = Buffer.alloc(64 * 1024)
 const server = new Socket(TCP)
 
-let resLength = write.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nServer: dv8\r\nDate: ${(new Date()).toUTCString()}\r\nContent-Length: 13\r\n\r\nHello, World!`, 0)
+const resLength = write.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nServer: dv8\r\nDate: ${(new Date()).toUTCString()}\r\nContent-Length: 13\r\n\r\nHello, World!`, 0)
 
 const createParser = () => {
   if (parsers.length) return parsers.shift()

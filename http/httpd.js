@@ -1,4 +1,4 @@
-function threadMain() {
+function threadMain () {
   const { Socket, TCP } = library('socket', {})
   const { HTTPParser, REQUEST } = library('httpParser', {})
 
@@ -7,7 +7,7 @@ function threadMain() {
   const write = Buffer.alloc(64 * 1024)
   const server = new Socket(TCP)
 
-  let resLength = write.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nServer: dv8\r\nDate: ${(new Date()).toUTCString()}\r\nContent-Length: 13\r\n\r\nHello, World!`, 0)
+  const resLength = write.write(`HTTP/1.1 200 OK\r\nContent-Type: text/plain\r\nServer: dv8\r\nDate: ${(new Date()).toUTCString()}\r\nContent-Length: 13\r\n\r\nHello, World!`, 0)
 
   const createParser = () => {
     if (parsers.length) return parsers.shift()
@@ -41,7 +41,9 @@ function threadMain() {
 let workers = parseInt(process.args[2] || '1')
 
 global.t1 = setInterval(() => {
-  print(process.memoryUsage().rss)
+  const { threads } = process
+  const { rss } = process.memoryUsage()
+  print(JSON.stringify({ rss, threads: Object.keys(threads).length }))
 }, 1000)
 
 while (workers--) {
@@ -53,4 +55,3 @@ while (workers--) {
     print(`thread ${thread.id} done`)
   }, { ipc: false })
 }
-

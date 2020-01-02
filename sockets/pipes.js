@@ -48,7 +48,7 @@ function createClient () {
     stats.out += len
   })
 
-  const timer = setInterval(() => {
+  process.timer = setInterval(() => {
     stats.in = (Math.floor((stats.in / (1024 * 1024)) * 100) / 100) * 8 // Megabits
     stats.out = (Math.floor((stats.out / (1024 * 1024)) * 100) / 100) * 8 // Megabits
     print(`client: ${JSON.stringify(stats, null, '  ')}`)

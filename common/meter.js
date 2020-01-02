@@ -13,7 +13,7 @@ const eight = BigInt(8)
 
 function printStats (pipe, finish = Date.now()) {
   const { name, start } = pipe
-  let mem = process.memoryUsage()
+  const mem = process.memoryUsage()
   const stats = new BigUint64Array(20)
   pipe.stats(stats)
   const [close, error, read, pause, data, resume, end, , , , written, incomplete, full, drain, maxQueue, alloc, free, eagain] = stats
@@ -66,7 +66,6 @@ module.exports = {
     printStats(pipe, Date.now())
     if (pipe.timer) {
       clearTimeout(pipe.timer)
-      //pipe.timer.stop()
       delete pipe.timer
     }
   }

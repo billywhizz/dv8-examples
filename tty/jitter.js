@@ -1,5 +1,4 @@
 const stats = new BigUint64Array(20)
-const thousand = BigInt(1000)
 const eight = BigInt(8)
 const { UV_TTY_MODE_NORMAL, TTY } = library('tty', {})
 const stdin = new TTY(0)

@@ -2,3 +2,7 @@ node_modules
 core
 scratch
 .vscode
+package.json
+package-lock.json
+*.log
+*.gz

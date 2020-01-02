@@ -2,7 +2,7 @@ const { File, O_RDWR, O_CREAT } = library('fs', {})
 const { ZLib, ZLIB_MODE_GZIP, ZLIB_MODE_GUNZIP, Z_FINISH, Z_NO_FLUSH, Z_FULL_FLUSH } = library('libz', {})
 const { buf2hex } = require('../common/buffers.js')
 const BUFSIZE = 1024
-const [ rb, wb ] = [ Buffer.alloc(BUFSIZE), Buffer.alloc(BUFSIZE) ]
+const [rb, wb] = [Buffer.alloc(BUFSIZE), Buffer.alloc(BUFSIZE)]
 
 const zlib = new ZLib(ZLIB_MODE_GZIP)
 print(`setup: ${zlib.setup(wb, rb)}`)

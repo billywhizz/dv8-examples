@@ -22,7 +22,7 @@ sock.onConnect(() => {
   return client
 })
 
-const timer = setInterval(() => {
+process.timer = setInterval(() => {
   print(JSON.stringify(process.memoryUsage().rss))
 }, 1000)
 addContext('dv8.billywhizz.io')

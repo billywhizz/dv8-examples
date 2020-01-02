@@ -3,7 +3,7 @@ const { start, stop } = require('../common/meter.js')
 
 const len = 64 * 1024
 let maxBytes = 0
-let count = parseInt(process.args[2] || '100000', 10) * (64 * 1024)
+const count = parseInt(process.args[2] || '100000', 10) * (64 * 1024)
 let send = 0
 let recv = 0
 
