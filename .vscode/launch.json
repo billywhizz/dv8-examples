@@ -8,26 +8,24 @@
             "address": "127.0.0.1",
             "port": 9222,
             "localRoot": "${workspaceFolder}",
-            "remoteRoot": "${workspaceFolder}/debugger"
+            "remoteRoot": "${workspaceFolder}/general"
         },
         {
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "cwd": "${workspaceFolder}/debugger",
+            "cwd": "${workspaceFolder}/http",
             "console": "integratedTerminal",
             "protocol": "inspector",
-            "remoteRoot": "${workspaceFolder}/debugger",
-            "localRoot": "${workspaceFolder}/debugger",
             "showAsyncStacks": true,
             "env": {
                 "THREAD_BUFFER_SIZE": "67108864",
                 "DV8_MODULES": "/home/andrew/Documents/source/cpp/dv8/out/lib/"
             },
-            "args": ["--inspect-brk", "www.amazon.co.uk"],
+            "args": ["www.amazon.co.uk"],
             "port": 9222,
             "runtimeExecutable": "/home/andrew/Documents/source/cpp/dv8/out/bin/dv8-dynamic",
-            "program": "${workspaceFolder}/debugger/lookup.js"
+            "program": "${workspaceFolder}/http/fast.js"
         }
     ]
 }

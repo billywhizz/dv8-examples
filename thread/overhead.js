@@ -3,6 +3,9 @@ function threadMain () {
     process.sock.close()
   })
   process.send({ mem: process.memoryUsage().rss, time: process.hrtime().toString() })
+  process.onExit = () => {
+    print(`Process ${process.PID}, thread ${process.TID} shutting down \n${JSON.stringify(process.activeHandles())}`)
+  }
 }
 
 const thousand = BigInt(1000)

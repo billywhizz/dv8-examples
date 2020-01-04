@@ -1,3 +1,5 @@
+const dirname = global.__dirname
+
 function threadFunc () {
   const { createServer } = require('./http.js')
   const { WSParser, createMessage } = require('./websocket.js')
@@ -112,7 +114,12 @@ let looping = false
 
 module.exports = {
   start: () => {
-    thread = process.spawn(threadFunc, ({ thread }) => thread.sock.close(), { ipc: true })
+    print(global.__dirname)
+    thread = process.spawn(threadFunc, ({ err, thread }) => {
+      if (err) return print(err.stack)
+      thread.sock.close()
+    }, { ipc: true, dirname })
+    //thread = process.spawn(threadFunc, ({ thread }) => thread.sock.close(), { ipc: true })
     thread.onMessage(message => global.send(message.payload))
     global.receive = message => thread.sendString(message)
     global.onRunMessageLoop = () => {

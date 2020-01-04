@@ -1,12 +1,11 @@
-// throw new Error('Main Scope')
 
 setTimeout(() => {
-  throw new Error('Inside Callback')
+  throw new Error('Timer Callback Error')
 }, 1000)
 
 function fail () {
   return new Promise((resolve, reject) => {
-    setTimeout(() => reject(new Error('Promise Rejection')), 1000)
+    setTimeout(() => reject(new Error('Promise Rejected Error')), 1000)
   })
 }
 
@@ -17,10 +16,12 @@ fail().catch(err => {
 })
 
 try {
-  throw new Error('Caught Exception')
+  throw new Error('Main Scope Handled Error')
 } catch (err) {
   print(err.stack)
 }
 
 const { foo } = require('./mod.js')
 foo()
+
+throw new Error('Main Scope Error')

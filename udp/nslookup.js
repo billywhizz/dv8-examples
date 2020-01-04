@@ -1,7 +1,12 @@
 const { lookup } = require('./dns.js')
 
 async function run () {
-  const result = await lookup(process.args[2] || 'www.google.com')
+  const args = {
+    query: process.args[2] || 'www.google.com',
+    address: process.args[3] || '8.8.8.8',
+    port: parseInt(process.args[4] || '53', 10)
+  }
+  const result = await lookup(args)
   const { address, port, message } = result
   print(`Server:      ${address}
 Address:     ${address}#${port}
