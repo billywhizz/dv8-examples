@@ -82,5 +82,5 @@ function pprint (bytes, width = 16, pos = 0) {
 }
 
 module.exports = {
-  buf2b64, buf2hex, hex2buf, b642buf, buf2binary, pprint
+  buf2b64, buf2hex, hex2buf, b642buf, buf2b64, buf2binary, pprint
 }
