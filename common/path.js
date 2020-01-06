@@ -3,45 +3,16 @@ function pathModule () {
   const CHAR_BACKWARD_SLASH = 92
   const CHAR_DOT = 46
 
+  function baseName (path) {
+    return path.slice(0, path.lastIndexOf('/') + 1)
+  }
+
   function isPathSeparator (code) {
     return code === CHAR_FORWARD_SLASH || code === CHAR_BACKWARD_SLASH
   }
 
   function isPosixPathSeparator (code) {
     return code === CHAR_FORWARD_SLASH
-  }
-
-  function normalize (path) {
-    if (path.length === 0) return '.'
-
-    const isAbsolute = path.charCodeAt(0) === CHAR_FORWARD_SLASH
-    const trailingSeparator = path.charCodeAt(path.length - 1) === CHAR_FORWARD_SLASH
-    path = normalizeString(path, !isAbsolute, '/', isPosixPathSeparator)
-
-    if (path.length === 0) {
-      if (isAbsolute) return '/'
-      return trailingSeparator ? './' : '.'
-    }
-    if (trailingSeparator) path += '/'
-
-    return isAbsolute ? `/${path}` : path
-  }
-
-  function join (...args) {
-    if (args.length === 0) return '.'
-    let joined
-    for (let i = 0; i < args.length; ++i) {
-      const arg = args[i]
-      if (arg.length > 0) {
-        if (joined === undefined) {
-          joined = arg
-        } else {
-          joined += `/${arg}`
-        }
-      }
-    }
-    if (joined === undefined) return '.'
-    return normalize(joined)
   }
 
   function normalizeString (path, allowAboveRoot, separator) {
@@ -108,9 +79,42 @@ function pathModule () {
     }
     return res
   }
-  return { join }
+
+  function normalize (path) {
+    if (path.length === 0) return '.'
+
+    const isAbsolute = path.charCodeAt(0) === CHAR_FORWARD_SLASH
+    const trailingSeparator = path.charCodeAt(path.length - 1) === CHAR_FORWARD_SLASH
+    path = normalizeString(path, !isAbsolute, '/', isPosixPathSeparator)
+
+    if (path.length === 0) {
+      if (isAbsolute) return '/'
+      return trailingSeparator ? './' : '.'
+    }
+    if (trailingSeparator) path += '/'
+
+    return isAbsolute ? `/${path}` : path
+  }
+
+  function join (...args) {
+    if (args.length === 0) return '.'
+    if (args.length === 2 && args[1][0] === '/') return args[1]
+    let joined
+    for (let i = 0; i < args.length; ++i) {
+      const arg = args[i]
+      if (arg.length > 0) {
+        if (joined === undefined) {
+          joined = arg
+        } else {
+          joined += `/${arg}`
+        }
+      }
+    }
+    if (joined === undefined) return '.'
+    return normalize(joined)
+  }
+
+  return { join, baseName }
 }
 
-const { join } = pathModule()
-
-module.exports = { join }
+module.exports = pathModule()

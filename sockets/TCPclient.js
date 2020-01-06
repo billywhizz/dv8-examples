@@ -1,12 +1,10 @@
 const { Socket, TCP } = library('socket', {})
 const { start, stop } = require('../common/meter.js')
-
 const len = 64 * 1024
 let maxBytes = 0
 const count = parseInt(process.args[2] || '100000', 10) * (64 * 1024)
 let send = 0
 let recv = 0
-
 function onConnect () {
   const r = client.write(len)
   send += len
@@ -14,18 +12,13 @@ function onConnect () {
   if (r < 0) return client.close()
   if (r < len) return client.pause()
 }
-
 const buf = Buffer.alloc(len)
 const client = new Socket(TCP)
-
-client.onClose(() => {
-  stop(client)
-})
-
+client.onClose(() => stop(client))
 client.onRead(bytes => {
   if (bytes > maxBytes) maxBytes = bytes
   recv += bytes
-  if (recv >= count && send >= count) {
+  if (recv >= count && send >= count && (recv === send)) {
     client.close()
     return
   }
@@ -36,16 +29,11 @@ client.onRead(bytes => {
   if (r < 0) return client.close()
   if (r < bytes) return client.pause()
 })
-
-client.onDrain(() => {
-  client.resume()
-})
-
+client.onDrain(() => client.resume())
 client.setup(buf, buf)
-
+client.buffer = buf
 client.onConnect(onConnect)
-
-const r = client.connect('0.0.0.0', 3001)
-if (r !== 0) throw new Error(`connect: ${r}`)
+client.connect('0.0.0.0', 3001)
 client.name = 'client'
 start(client)
+gc()

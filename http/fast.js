@@ -1,4 +1,4 @@
-require('../debugger/debug.js').start()
+//require('../debugger/debug.js').start()
 const { Socket, TCP } = library('socket', {})
 const server = new Socket(TCP)
 const read = Buffer.alloc(64 * 1024)

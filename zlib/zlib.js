@@ -1,5 +1,5 @@
 const { File, O_RDWR, O_CREAT } = library('fs', {})
-const { ZLib, ZLIB_MODE_GZIP, ZLIB_MODE_GUNZIP, Z_FINISH, Z_NO_FLUSH, Z_FULL_FLUSH } = library('libz', {})
+const { ZLib, ZLIB_MODE_GZIP, ZLIB_MODE_GUNZIP, Z_FINISH, Z_NO_FLUSH, Z_FULL_FLUSH } = library('zlib', {})
 const { buf2hex } = require('../common/buffers.js')
 const BUFSIZE = 1024
 const [rb, wb] = [Buffer.alloc(BUFSIZE), Buffer.alloc(BUFSIZE)]
@@ -21,11 +21,15 @@ print(`write: ${zlib.write(wb.write('hello'), Z_FINISH)}`)
 print(`end: ${zlib.end()}`)
 print(buf2hex(rb, BUFSIZE))
 
+const bytes = new Uint8Array(rb.bytes)
 let r = zlib.setup(wb, rb)
-r = zlib.write(wb.write('hello'), Z_FINISH)
+const len = wb.write('hello')
+r = zlib.write(len, Z_FINISH)
 if (r < 0) throw new Error('Bad Write')
 print(`done: ${BUFSIZE - r}`)
 let size = BUFSIZE - r
+print(size)
+bytes[size + 1] = 0
 if (zlib.end() !== 0) throw new Error('Error Finalizing')
 print(buf2hex(rb, BUFSIZE - r))
 
@@ -34,7 +38,7 @@ r = fs.setup(rb, rb)
 print(`setup: ${r}`)
 const fd = fs.open('./hello.gz', O_RDWR | O_CREAT)
 print(`open: ${fd}`)
-r = fs.write(size, 0)
+r = fs.write(size + 2, 0)
 print(`write: ${r}`)
 r = fs.close()
 print(`close: ${r}`)

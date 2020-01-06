@@ -1,7 +1,31 @@
 const lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('')
 
-const buf2b64 = (buf, len) => {
-  const bytes = new Uint8Array(buf.bytes)
+function decodeBase64 (input) {
+  const keyStr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/='
+  let output = ''
+  let i = 0
+  input = input.replace(/[^A-Za-z0-9\+\/\=]/g, '')
+  do {
+    const enc1 = keyStr.indexOf(input.charAt(i++))
+    const enc2 = keyStr.indexOf(input.charAt(i++))
+    const enc3 = keyStr.indexOf(input.charAt(i++))
+    const enc4 = keyStr.indexOf(input.charAt(i++))
+    const chr1 = enc1 << 2 | enc2 >> 4
+    const chr2 = (enc2 & 15) << 4 | enc3 >> 2
+    const chr3 = (enc3 & 3) << 6 | enc4
+    output = output + String.fromCharCode(chr1)
+    if (enc3 !== 64) {
+      output = output + String.fromCharCode(chr2)
+    }
+    if (enc4 !== 64) {
+      output = output + String.fromCharCode(chr3)
+    }
+  } while (i < input.length)
+  return output
+}
+
+const buf2b64 = (buf, len = buf.size) => {
+  const bytes = new Uint8Array(buf.bytes.slice(0, len))
   let i = 0
   const encoded = []
   while (i < len) {
@@ -24,12 +48,17 @@ const buf2b64 = (buf, len) => {
   return encoded.join('')
 }
 
-const buf2hex = (buf, len) => {
-  return Array.prototype.map.call((new Uint8Array(buf.bytes)).slice(0, len), x => ('00' + x.toString(16)).slice(-2)).join('')
+const b642buf = (b64) => {
+  const decoded = decodeBase64(b64)
+  var bytes = new Uint8Array(decoded.length)
+  for (var i = 0; i < decoded.length; ++i) {
+    bytes[i] = decoded.charCodeAt(i)
+  }
+  return Buffer.fromArrayBuffer(bytes.buffer)
 }
 
-const b642buf = (b64, buf) => {
-
+const buf2hex = (buf, len) => {
+  return Array.prototype.map.call((new Uint8Array(buf.bytes)).slice(0, len), x => ('00' + x.toString(16)).slice(-2)).join('')
 }
 
 const hex2buf = (hex, buf) => {
@@ -82,5 +111,5 @@ function pprint (bytes, width = 16, pos = 0) {
 }
 
 module.exports = {
-  buf2b64, buf2hex, hex2buf, b642buf, buf2b64, buf2binary, pprint
+  buf2b64, buf2hex, hex2buf, b642buf, buf2binary, pprint
 }

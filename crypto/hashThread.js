@@ -11,14 +11,14 @@ function threadMain () {
   hash.setup('md5', wb, rb)
 
   hash.create(wb.write('hello'))
-  print(buf2hex(bytes, hash.digest()))
+  //print(buf2hex(bytes, hash.digest()))
 
   hash.create()
   hash.update(wb.write('hello'))
-  print(buf2hex(bytes, hash.digest()))
+  //print(buf2hex(bytes, hash.digest()))
 
   hash.create(wb.write('hello'))
-  print(buf2hex(bytes, hash.digest()))
+  //print(buf2hex(bytes, hash.digest()))
 
   hash.create()
   hash.update(wb.write('h'))
@@ -26,18 +26,18 @@ function threadMain () {
   hash.update(wb.write('l'))
   hash.update(wb.write('l'))
   hash.update(wb.write('o'))
-  print(buf2hex(bytes, hash.digest()))
+  //print(buf2hex(bytes, hash.digest()))
 
   hash.setup('sha256', wb, rb)
   hash.create(wb.write('hello'))
-  print(buf2hex(bytes, hash.digest()))
+  //print(buf2hex(bytes, hash.digest()))
 
   hash.create(wb.write('hello'))
-  print(buf2hex(bytes, hash.digest()))
+  //print(buf2hex(bytes, hash.digest()))
 
   hash.setup('sha1', wb, rb)
   hash.create(wb.write('hello'))
-  print(buf2hex(bytes, hash.digest()))
+  //print(buf2hex(bytes, hash.digest()))
 
   hash.create()
   hash.update(wb.write('h'))
@@ -45,7 +45,20 @@ function threadMain () {
   hash.update(wb.write('l'))
   hash.update(wb.write('l'))
   hash.update(wb.write('o'))
-  print(buf2hex(bytes, hash.digest()))
+  //print(buf2hex(bytes, hash.digest()))
 }
 
-module.exports = { run: () => process.spawn(threadMain, () => {}, { ipc: false }) }
+let done = 0
+let todo = parseInt(args[2] || '1', 10)
+
+const t = setInterval(() => {
+  print(Object.keys(process.threads).length)
+}, 1000)
+
+process.onExit =() => {
+  print(done)
+}
+
+while (todo--) {
+  process.spawn(threadMain, () => done++, { ipc: false })
+}

@@ -1,9 +1,15 @@
 const { UDP } = library('udp', {})
 const { lookup } = require('./dns.js')
 
-async function run (name) {
+async function run (name = 'foo') {
   const port = 4444
-  const result = await lookup('api.billywhizz.io')
+  const args = {
+    query: process.args[2] || 'api.billywhizz.io',
+    address: process.args[3] || '8.8.8.8',
+    port: parseInt(process.args[4] || '53', 10)
+  }
+  const { address } = args
+  const result = await lookup(args)
   const { message } = result
   const { answer } = message
   const [record] = answer
