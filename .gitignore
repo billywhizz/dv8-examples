@@ -7,3 +7,4 @@ package-lock.json
 *.log
 *.gz
 wasm/libwabt.js
+general/markdown.html

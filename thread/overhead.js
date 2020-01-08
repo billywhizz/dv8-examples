@@ -17,9 +17,7 @@ function spawn () {
     print(JSON.stringify(thread))
     setTimeout(spawn, 1000)
   }, { ipc: true })
-  thread.onMessage(message => {
-    const { payload } = message
-    const output = JSON.parse(payload)
+  thread.onMessage(output => {
     const boot = BigInt(output.time)
     const { mem } = output
     const time = (boot - start) / thousand

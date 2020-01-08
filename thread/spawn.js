@@ -10,9 +10,7 @@ function spawn () {
     print(`thread ${result.thread.id} done`)
   }, { ipc: true })
   thread.onMessage(message => {
-    const { payload } = message
-    const output = JSON.parse(payload)
-    const boot = BigInt(output.time)
+    const boot = BigInt(message.time)
     print(`${thread.id.toString().padEnd(5, ' ')} : ${(boot - start) / thousand} usec`)
     thread.sock.close()
   })
